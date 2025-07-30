@@ -3,6 +3,8 @@ const { createServer } = require("http");
 const { parse } = require("url");
 const { renderToString } = require("react-dom/server");
 
+const React = require("react");
+
 //need to download the npm i -D @babel/core @babel/preset-env @babel/preset-react @babel/register for the proper functioning of the project especialy when these type data is included  also need to load the react and react-dom
 const pizzas = [
   {
@@ -64,15 +66,18 @@ function MenuItem({ pizza }) {
   );
 }
 
-const htmlTemplaten = readFileSync(`${__dirname}/index.html`, "utf-8");
+const htmlTemplate = readFileSync(`${__dirname}/index.html`, "utf-8");
 
 const server = createServer((req, res) => {
   const pathName = parse(req.url, true).pathname;
 
   if (pathName === "/") {
+    const renderedReact = renderToString(<Home />);
+    const html = htmlTemplate.replace("&& Content &&", renderedReact);
+
     res.writeHead(200, { "Content-type": "text/html" });
 
-    res.end(htmlTemplaten);
+    res.end(html);
   } else if (pathName === "/test") {
     res.end("test");
   } else {

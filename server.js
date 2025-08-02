@@ -2,7 +2,6 @@ const { readFileSync } = require("fs");
 const { createServer } = require("http");
 const { parse } = require("url");
 const { renderToString } = require("react-dom/server");
-
 const React = require("react");
 
 //need to download the npm i -D @babel/core @babel/preset-env @babel/preset-react @babel/register for the proper functioning of the project especialy when these type data is included  also need to load the react and react-dom
@@ -61,6 +60,7 @@ function MenuItem({ pizza }) {
       <h4>
         {pizza.name} (${pizza.price})
       </h4>
+      {console.log("🚀 Starting minimal server...")}
       <Counter />
     </li>
   );
@@ -68,8 +68,12 @@ function MenuItem({ pizza }) {
 
 const htmlTemplate = readFileSync(`${__dirname}/index.html`, "utf-8");
 
+const clientJs = readFileSync(`${__dirname}/client.js`, "utf-8");
+console.log(clientJs, htmlTemplate);
 const server = createServer((req, res) => {
+  console.log("📨 Request received!");
   const pathName = parse(req.url, true).pathname;
+  console.log(pathName);
 
   if (pathName === "/") {
     const renderedReact = renderToString(<Home />);
@@ -78,8 +82,10 @@ const server = createServer((req, res) => {
     res.writeHead(200, { "Content-type": "text/html" });
 
     res.end(html);
-  } else if (pathName === "/test") {
-    res.end("test");
+  } else if (pathName === "/client.js") {
+    res.writeHead(200, { "Content-type": "application/javascript" });
+
+    res.end(clientJs);
   } else {
     res.end("this url cannot be found");
   }

@@ -60,7 +60,7 @@ function MenuItem({ pizza }) {
       <h4>
         {pizza.name} (${pizza.price})
       </h4>
-      {console.log("🚀 Starting minimal server...")}
+
       <Counter />
     </li>
   );
@@ -69,11 +69,9 @@ function MenuItem({ pizza }) {
 const htmlTemplate = readFileSync(`${__dirname}/index.html`, "utf-8");
 
 const clientJs = readFileSync(`${__dirname}/client.js`, "utf-8");
-console.log(clientJs, htmlTemplate);
+
 const server = createServer((req, res) => {
-  console.log("📨 Request received!");
   const pathName = parse(req.url, true).pathname;
-  console.log(pathName);
 
   if (pathName === "/") {
     const renderedReact = renderToString(<Home />);
